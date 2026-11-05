@@ -246,6 +246,27 @@ def test_reconcile_adopts_video_found_by_marker_without_a_second_upload():
 
 
 @respx.mock
+def test_reconcile_keeps_the_policy_reason_for_forced_private():
+    """A crash loses the upload response, but the reason must still name our policy."""
+    publication, _ = _publication_with_unknown_outcome(make_account())
+    _mock_uploads(
+        [
+            {
+                "snippet": {
+                    "description": f"Hi\n\n[ref:{publication.marker}]",
+                    "resourceId": {"videoId": "VIDEO123"},
+                }
+            },
+        ]
+    )
+    respx.get(VIDEOS).mock(return_value=httpx.Response(200, json=fixture("videos_list_processed")))
+    publication = services.reconcile(publication)
+    assert publication.visibility == "private"
+    assert "not audited" in publication.visibility_reason
+    assert "platform reports" not in publication.visibility_reason
+
+
+@respx.mock
 def test_reconcile_waits_during_grace_then_fails():
     publication, _ = _publication_with_unknown_outcome(make_account())
     _mock_uploads([])

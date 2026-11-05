@@ -78,6 +78,11 @@ docker compose --profile test run --rm test
 # The package
 cd packages/django-social-publisher
 pip install -e ".[celery,drf,dev]" && pytest
+
+# The full stack, killing workers mid-upload. Stop any running stack first, as they share ports
+pip install httpx
+python platform/e2e/run.py
 ```
 
-No test calls a paid API. All external calls are mocked or use the fake providers.
+No test calls a paid API. All external calls are mocked or use the fake providers, and the full-stack
+run ignores `.env` so that your real keys cannot reach it.

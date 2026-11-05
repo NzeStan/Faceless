@@ -54,3 +54,15 @@ jobs:
             -e SOCIAL_TOKEN_ENCRYPTION_KEYS=MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE= \
             -e S3_ACCESS_KEY=ci -e S3_SECRET_KEY=ci \
             faceless-api sh -c "python -c 'import kombu.transport.redis' && python manage.py check --deploy --fail-level WARNING"
+
+  stack-e2e:
+    # Real workers, PostgreSQL, Redis, MinIO and FFmpeg, with workers killed mid-upload.
+    # It uses a local stand-in for Google and fake providers, so it makes no paid calls.
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.14" }
+      - run: pip install httpx
+      - run: python platform/e2e/run.py

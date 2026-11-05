@@ -6,3 +6,4 @@
 **/.mypy_cache
 .env
 *.sqlite3
+platform/e2e

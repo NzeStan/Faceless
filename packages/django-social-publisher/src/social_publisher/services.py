@@ -241,8 +241,14 @@ def publish(
     if issues:
         raise ValidationFailed(issues)
 
+    # Saved now because a crash can lose the upload response that would otherwise carry it.
+    visibility_reason = (
+        capabilities.public_visibility.reason or ""
+        if metadata.visibility != "private" and not capabilities.public_visibility.available
+        else ""
+    )
     publication = existing or _create_publication(
-        account, idempotency_key, fingerprint, metadata.visibility
+        account, idempotency_key, fingerprint, metadata.visibility, visibility_reason
     )
     if not _claim(publication, adapter):
         publication.refresh_from_db()
@@ -312,7 +318,11 @@ def _fingerprint(media: MediaSpec, metadata: PublishMetadata) -> str:
 
 
 def _create_publication(
-    account: ConnectedAccount, key: str, fingerprint: str, requested_visibility: str
+    account: ConnectedAccount,
+    key: str,
+    fingerprint: str,
+    requested_visibility: str,
+    visibility_reason: str = "",
 ) -> Publication:
     marker = hashlib.sha256(f"{account.pk}:{key}".encode()).hexdigest()[:32]
     try:
@@ -323,6 +333,7 @@ def _create_publication(
                 marker=marker,
                 request_fingerprint=fingerprint,
                 requested_visibility=requested_visibility,
+                visibility_reason=visibility_reason[:512],
             )
     except IntegrityError:
         return Publication.objects.get(account=account, idempotency_key=key)

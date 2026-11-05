@@ -1,0 +1,25 @@
+# Overlay for platform/e2e/run.py. It ignores .env, so real API keys can never reach this stack.
+x-e2e-env: &e2e-env
+  DJANGO_SETTINGS_MODULE: e2e.settings
+  DJANGO_SECRET_KEY: e2e-only-not-a-secret-e2e-only-not-a-secret-e2e-only-not-a-secret
+  SOCIAL_TOKEN_ENCRYPTION_KEYS: MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=
+  YOUTUBE_CLIENT_ID: e2e-client
+  YOUTUBE_CLIENT_SECRET: e2e-secret
+  LLM_PROVIDER: providers.fake.FakeLLM
+  TTS_PROVIDER: providers.fake.FakeTTS
+  STOCK_PROVIDER: providers.fake.FakeStock
+
+services:
+  fake-google:
+    build: { context: ., dockerfile: platform/Dockerfile, target: api }
+    command: python -u /e2e/fake_google.py
+    ports: ["9999:9999"]
+    volumes: ["./platform/e2e:/e2e"]
+
+  createbucket: { env_file: !reset [], environment: *e2e-env }
+  migrate: { env_file: !reset [], environment: *e2e-env }
+  api: { env_file: !reset [], environment: *e2e-env }
+  worker-ai: { env_file: !reset [], environment: *e2e-env }
+  worker-render: { env_file: !reset [], environment: *e2e-env }
+  worker-publish: { env_file: !reset [], environment: *e2e-env }
+  beat: { env_file: !reset [], environment: *e2e-env }
