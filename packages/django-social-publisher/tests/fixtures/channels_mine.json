@@ -1,0 +1,1 @@
+{"kind":"youtube#channelListResponse","items":[{"kind":"youtube#channel","id":"UC123","snippet":{"title":"Test Channel"},"contentDetails":{"relatedPlaylists":{"uploads":"UU123"}}}]}

@@ -1,0 +1,47 @@
+[project]
+name = "faceless-platform"
+version = "0.0.1"
+requires-python = ">=3.12"
+dependencies = [
+  "Django>=5.2,<6.2",
+  "djangorestframework>=3.16",
+  "djangorestframework-simplejwt>=5.5",
+  "drf-spectacular>=0.28",
+  "celery[redis]>=5.5",
+  "psycopg[binary]>=3.2",
+  "dj-database-url>=2.2",
+  "django-storages[s3]>=1.14",
+  "anthropic>=2",
+  "httpx>=0.27",
+  "mutagen>=1.47",
+  "pydantic>=2.7",
+  "gunicorn>=23",
+  "django-social-publisher",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-django>=4.9", "factory-boy>=3.3", "respx>=0.21", "ruff>=0.6"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.test"
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = ["ffmpeg: needs ffmpeg and ffprobe on PATH"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S", "DJ", "RUF"]
+ignore = ["S101", "DJ001"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S105", "S106", "S107", "E402", "S603", "S607", "RUF059", "RUF012", "PT"]
+"apps/*/models.py" = ["RUF012"]
+"apps/*/serializers.py" = ["RUF012"]
+"apps/*/admin.py" = ["RUF012"]
+"config/settings/*.py" = ["F403", "F405", "E402", "RUF005"]
+"*/migrations/*" = ["E501", "RUF012"]
+"scripts/*" = ["S"]
+"apps/production/render.py" = ["S603", "S607"]

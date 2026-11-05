@@ -1,0 +1,62 @@
+name: django-social-publisher
+
+on:
+  push:
+    paths: ["packages/django-social-publisher/**", ".github/workflows/django-social-publisher.yml"]
+  pull_request:
+    paths: ["packages/django-social-publisher/**", ".github/workflows/django-social-publisher.yml"]
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: packages/django-social-publisher
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.12", "3.13", "3.14"]
+        django: ["5.2", "6.0", "6.1"]
+        exclude:
+          - { python: "3.11", django: "6.0" }
+          - { python: "3.11", django: "6.1" }
+    services:
+      postgres:
+        image: postgres:17
+        env: { POSTGRES_PASSWORD: postgres }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "${{ matrix.python }}" }
+      - run: pip install -e ".[celery,drf,dev]" "Django~=${{ matrix.django }}.0"
+      - run: pytest
+        env: { TEST_POSTGRES_HOST: localhost }
+
+  without-extras:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.14" }
+      - run: pip install -e . pytest pytest-django respx
+      - run: pytest
+
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.14" }
+      - run: pip install -e ".[celery,drf,dev]"
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: mypy
+      - run: pip-audit --skip-editable
+      - run: python -m build

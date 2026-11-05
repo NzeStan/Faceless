@@ -1,0 +1,1 @@
+{"kind":"youtube#videoListResponse","items":[{"kind":"youtube#video","id":"VIDEO123","status":{"uploadStatus":"processed","privacyStatus":"private","containsSyntheticMedia":true},"processingDetails":{"processingStatus":"succeeded"}}]}
