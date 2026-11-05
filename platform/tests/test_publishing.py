@@ -7,8 +7,8 @@ import respx
 from django.conf import settings
 from django.test import override_settings
 from django.utils import timezone
-from social_publisher.adapters.youtube import TOKEN_URL, UPLOAD_URL
-from social_publisher.models import Publication, QuotaLedger
+from social_video_publisher.adapters.youtube import TOKEN_URL, UPLOAD_URL
+from social_video_publisher.models import Publication, QuotaLedger
 
 from apps.content.models import ContentItem
 from apps.publishing import services as publishing
@@ -249,8 +249,8 @@ def test_lost_connection_reconciles_by_marker_and_never_uploads_again(user, fake
 def test_quota_exhaustion_defers_instead_of_failing(user, fake_render):
     item = _approved_in_db(_ready(user, fake_render), connect_account(user))
     post = _mock_initiate()
-    today_limit = settings.SOCIAL_PUBLISHER["PLATFORMS"]["youtube"]["DAILY_UPLOAD_LIMIT"]
-    from social_publisher import quota
+    today_limit = settings.SOCIAL_VIDEO_PUBLISHER["PLATFORMS"]["youtube"]["DAILY_UPLOAD_LIMIT"]
+    from social_video_publisher import quota
 
     QuotaLedger.objects.create(
         platform="youtube", bucket="uploads", day=quota.pacific_day(), units_used=today_limit

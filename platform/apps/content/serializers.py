@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from social_publisher.contrib.drf.serializers import PublicationSerializer
+from social_video_publisher.contrib.drf.serializers import PublicationSerializer
 
 from apps.production.models import MediaAsset, RenderJob, Voiceover
 from apps.publishing.media import signed_url

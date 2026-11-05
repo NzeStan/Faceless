@@ -1,7 +1,7 @@
 """One user must never read or act on another user's objects (IDOR)."""
 
 import pytest
-from social_publisher.models import Publication
+from social_video_publisher.models import Publication
 
 from tests.factories import ContentItemFactory, NicheFactory, UserFactory, connect_account
 from tests.helpers import generate_ready_item

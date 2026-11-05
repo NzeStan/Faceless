@@ -1,4 +1,4 @@
-"""Glue between content items and django-social-publisher."""
+"""Glue between content items and django-social-video-publisher."""
 
 from __future__ import annotations
 
@@ -8,20 +8,20 @@ from datetime import timedelta
 from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
-from social_publisher import quota
-from social_publisher import services as publisher
-from social_publisher.errors import (
+from social_video_publisher import quota
+from social_video_publisher import services as publisher
+from social_video_publisher.errors import (
     AuthExpired,
     CapabilityUnavailable,
     OutcomeUnknown,
     PlatformRejected,
     QuotaExhausted,
     RateLimited,
-    SocialPublisherError,
+    SocialVideoPublisherError,
     ValidationFailed,
 )
-from social_publisher.models import Publication
-from social_publisher.types import MediaSpec, PublishMetadata
+from social_video_publisher.models import Publication
+from social_video_publisher.types import MediaSpec, PublishMetadata
 
 from apps.content.models import ContentItem
 from apps.content.services import InvalidTransition, record_failure, transition
@@ -260,7 +260,7 @@ def reconcile(item: ContentItem) -> ContentItem:
         return item
     try:
         publication = publisher.reconcile(publication)
-    except SocialPublisherError as exc:
+    except SocialVideoPublisherError as exc:
         logger.info("Reconcile for item %s postponed: %s", item.pk, exc.code)
         return item
     return sync(item, publication)
@@ -280,7 +280,7 @@ def status_summary() -> dict:
             else ""
         ),
         "uploads_used_today": quota.units_used("youtube", "uploads"),
-        "uploads_daily_limit": settings.SOCIAL_PUBLISHER["PLATFORMS"]["youtube"].get(
+        "uploads_daily_limit": settings.SOCIAL_VIDEO_PUBLISHER["PLATFORMS"]["youtube"].get(
             "DAILY_UPLOAD_LIMIT", 100
         ),
         "quota_resets_at": quota.next_reset(),

@@ -22,7 +22,7 @@ The prompts say "about 100".
 `videos.update` but do not state a requirement for insert. We send `22` (People & Blogs) unless a
 category is given, which matches Google's own samples.
 
-## django-social-publisher
+## django-social-video-publisher
 
 | Decision | Why |
 | --- | --- |
@@ -36,6 +36,7 @@ category is given, which matches Google's own samples.
 | An expired session on resume raises `OutcomeUnknown` | Google says to start a new upload, but the earlier upload may have finished. Checking first avoids duplicates |
 | No browser-callback view | A callback with no signed-in user allows account-linking CSRF, so `state` and `code` are posted with the user's credentials |
 | `disconnect` returns whether revocation was confirmed | Local tokens are always deleted, but the host must be able to say truthfully if Google could not confirm it |
+| Published as `django-social-video-publisher`, imported as `social_video_publisher` | `django-social-publisher` is taken on PyPI by an unrelated project, last released in 2016, which also installs a `social_publisher` module. Renaming both avoids a collision |
 | MIT licence | Common for reusable Django apps. Change it before the first release if you prefer another |
 | Support Python 3.11 to 3.14 and Django 5.2, 6.0, 6.1 | Python 3.10 reached end of life in Oct 2026. These are the maintained Django series |
 

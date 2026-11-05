@@ -9,7 +9,7 @@ from __future__ import annotations
 from celery import shared_task
 from django.db.models import Q
 from django.utils import timezone
-from social_publisher.models import Publication
+from social_video_publisher.models import Publication
 
 from apps.content.models import ContentItem
 

@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ("content", "0001_initial"),
         ("production", "0001_initial"),
-        ("social_publisher", "0001_initial"),
+        ("social_video_publisher", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
                 related_name="+",
-                to="social_publisher.publication",
+                to="social_video_publisher.publication",
             ),
         ),
         migrations.AddField(
@@ -53,7 +53,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
                 related_name="+",
-                to="social_publisher.connectedaccount",
+                to="social_video_publisher.connectedaccount",
             ),
         ),
         migrations.AddField(

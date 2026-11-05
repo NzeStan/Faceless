@@ -5,8 +5,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
-from social_publisher.errors import SocialPublisherError
-from social_publisher.services import accounts_for_owner
+from social_video_publisher.errors import SocialVideoPublisherError
+from social_video_publisher.services import accounts_for_owner
 
 from apps.production.models import Voiceover
 from apps.production.tasks import start_pipeline
@@ -98,7 +98,7 @@ class ContentItemViewSet(viewsets.ModelViewSet):
             )
         except services.InvalidTransition as exc:
             return _conflict(exc)
-        except SocialPublisherError as exc:
+        except SocialVideoPublisherError as exc:
             return Response({"code": exc.code, "detail": str(exc)}, status=status.HTTP_409_CONFLICT)
         return Response(ContentItemDetailSerializer(item).data)
 

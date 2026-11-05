@@ -19,9 +19,9 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import subprocess
 import sys
-import tempfile
 import time
 import uuid
 from pathlib import Path
@@ -46,11 +46,14 @@ def check(passed: bool, message: str) -> None:
         failures.append(message)
 
 
+def compose_command(*args: str) -> list[str]:
+    base = ["docker", "compose", "-p", PROJECT, "-f", "docker-compose.yml"]
+    return [*base, "-f", "platform/e2e/compose.yml", *args]
+
+
 def compose(*args: str, capture: bool = True) -> subprocess.CompletedProcess:
-    command = ["docker", "compose", "-p", PROJECT, "-f", "docker-compose.yml"]
-    command += ["-f", "platform/e2e/compose.yml", *args]
     return subprocess.run(
-        command,
+        compose_command(*args),
         capture_output=capture,
         text=True,
         encoding="utf-8",
@@ -152,14 +155,21 @@ class Run:
 
     @staticmethod
     def check_video_format(video: bytes) -> None:
-        with tempfile.TemporaryDirectory() as folder:
-            (Path(folder) / "preview.mp4").write_bytes(video)
-            probe = compose(
-                "run", "--rm", "-T", "--no-deps", "-v", f"{Path(folder).as_posix()}:/out",
-                "worker-render", "ffprobe", "-v", "error", "-show_entries",
-                "stream=codec_name,width,height", "-of", "compact", "/out/preview.mp4",
-            )  # fmt: skip
-        out = probe.stdout
+        # Piped in because a bind-mounted temp folder is unreadable to the container on Linux.
+        script = (
+            "cat > /tmp/preview.mp4 && ffprobe -v error "
+            "-show_entries stream=codec_name,width,height -of compact /tmp/preview.mp4"
+        )
+        probe = subprocess.run(
+            compose_command("exec", "-T", "worker-render", "sh", "-c", script),
+            input=video,
+            capture_output=True,
+            cwd=ROOT,
+            check=False,
+        )
+        out = probe.stdout.decode("utf-8", "replace")
+        if probe.returncode:
+            print(probe.stderr.decode("utf-8", "replace")[-1000:])
         check("width=1080" in out and "height=1920" in out, "video is 1080x1920")
         check("h264" in out and "aac" in out, "video is H.264 with AAC audio")
 
@@ -248,7 +258,10 @@ class Run:
         logs = compose("logs", "--no-color", *APP_SERVICES).stdout
         check(len(logs) > 1000, "logs were captured")
         check(not [s for s in secrets if s in logs], "no secrets in container logs")
-        for table in ("social_publisher_connectedaccount", "social_publisher_publication"):
+        for table in (
+            "social_video_publisher_connectedaccount",
+            "social_video_publisher_publication",
+        ):
             sql = f"select string_agg(t::text, ' ') from (select * from {table}) t;"
             rows = compose(
                 "exec", "-T", "postgres", "psql", "-U", "faceless", "-d", "faceless", "-tAc", sql
@@ -317,6 +330,9 @@ def main() -> int:
         print(f"\nRESULT: {'PASSED' if not failures else f'{len(failures)} FAILED'}")
         for failure in failures:
             print(f"  - {failure}")
+            if os.environ.get("GITHUB_ACTIONS"):
+                # Annotations can be read without the admin rights that job logs require.
+                print("::error::" + failure.replace("%", "%25").replace("\n", "%0A"))
         return 1 if failures else 0
     finally:
         if not args.keep:

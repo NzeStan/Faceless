@@ -32,11 +32,11 @@ REST_FRAMEWORK = {
     **REST_FRAMEWORK,
     "DEFAULT_THROTTLE_RATES": {"auth": "1000/min", "generation": "1000/min"},
 }
-SOCIAL_PUBLISHER = {
-    **SOCIAL_PUBLISHER,
+SOCIAL_VIDEO_PUBLISHER = {
+    **SOCIAL_VIDEO_PUBLISHER,
     "PLATFORMS": {
         "youtube": {
-            **SOCIAL_PUBLISHER["PLATFORMS"]["youtube"],
+            **SOCIAL_VIDEO_PUBLISHER["PLATFORMS"]["youtube"],
             "CHUNK_SIZE_BYTES": 256 * 1024,
             "RETRY_BACKOFF_SECONDS": 0,
             "DAILY_UPLOAD_LIMIT": 3,

@@ -6,7 +6,7 @@ class E2EConfig(AppConfig):
 
     def ready(self):
         # Done here because importing the adapter from settings would load models too early.
-        import social_publisher.adapters.youtube as youtube
+        import social_video_publisher.adapters.youtube as youtube
 
         base = "http://fake-google:9999"
         youtube.TOKEN_URL = f"{base}/token"

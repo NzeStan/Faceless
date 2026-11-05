@@ -55,14 +55,14 @@ class ContentItem(models.Model):
         "production.MediaAsset", null=True, blank=True, on_delete=models.SET_NULL, related_name="+"
     )
     publish_account = models.ForeignKey(
-        "social_publisher.ConnectedAccount",
+        "social_video_publisher.ConnectedAccount",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
         related_name="+",
     )
     publication = models.ForeignKey(
-        "social_publisher.Publication",
+        "social_video_publisher.Publication",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,

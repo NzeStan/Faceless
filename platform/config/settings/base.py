@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
     "drf_spectacular",
-    "social_publisher",
+    "social_video_publisher",
     "apps.accounts",
     "apps.content",
     "apps.production",
@@ -120,8 +120,8 @@ SPECTACULAR_SETTINGS = {
     "SERVE_PERMISSIONS": ["rest_framework.permissions.AllowAny"],
     "ENUM_NAME_OVERRIDES": {
         "ContentStatusEnum": "apps.content.models.ContentItem.Status",
-        "PublicationStatusEnum": "social_publisher.models.Publication.Status",
-        "AccountStatusEnum": "social_publisher.models.ConnectedAccount.Status",
+        "PublicationStatusEnum": "social_video_publisher.models.Publication.Status",
+        "AccountStatusEnum": "social_video_publisher.models.ConnectedAccount.Status",
     },
 }
 
@@ -211,7 +211,7 @@ CLIP_REUSE_WINDOW = 20
 YOUTUBE_PROJECT_AUDITED = env_bool("YOUTUBE_PROJECT_AUDITED", False)
 YOUTUBE_FORCE_PRIVATE_WHEN_UNAUDITED = env_bool("YOUTUBE_FORCE_PRIVATE_WHEN_UNAUDITED", True)
 YOUTUBE_DAILY_UPLOAD_LIMIT = int(env("YOUTUBE_DAILY_UPLOAD_LIMIT", "100"))
-SOCIAL_PUBLISHER = {
+SOCIAL_VIDEO_PUBLISHER = {
     "TOKEN_ENCRYPTION_KEYS": [
         key.strip() for key in env("SOCIAL_TOKEN_ENCRYPTION_KEYS").split(",") if key.strip()
     ],

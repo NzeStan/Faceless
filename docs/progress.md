@@ -76,7 +76,7 @@ None of these showed up in the test suite.
 | --- | --- |
 | Any live API call: Anthropic, ElevenLabs, Pexels, YouTube | That our requests match the real services. All of this is mocked |
 | `platform/scripts/smoke_youtube.py` | The whole approve-and-upload loop against YouTube. It has never been executed |
-| The release workflow | Publishing to PyPI through Trusted Publishing. It has not been triggered |
+| The release workflow | Publishing to PyPI through Trusted Publishing. It has not been triggered; see [releasing.md](releasing.md) |
 
 **The YouTube test fixtures are hand-written from the documentation, not recorded.** The tests show
 the code handles the documented behaviour. If the real responses differ, the tests will not notice.

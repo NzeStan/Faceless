@@ -7,7 +7,7 @@ Everything runs through a REST API at `/api/v1/`. There is no frontend.
 
 | Path | What it is |
 | --- | --- |
-| [packages/django-social-publisher](packages/django-social-publisher/README.md) | Reusable, open-source YouTube connection and publishing app |
+| [packages/django-social-video-publisher](packages/django-social-video-publisher/README.md) | Reusable, open-source YouTube connection and publishing app |
 | [platform](platform) | The private Django project |
 | [docs/decisions.md](docs/decisions.md) | Technical decisions, including where the current YouTube docs differ from the brief |
 | [docs/progress.md](docs/progress.md) | What works, what was tested, and what still needs doing |
@@ -76,7 +76,7 @@ time in `next_attempt_at`.
 docker compose --profile test run --rm test
 
 # The package
-cd packages/django-social-publisher
+cd packages/django-social-video-publisher
 pip install -e ".[celery,drf,dev]" && pytest
 
 # The full stack, killing workers mid-upload. Stop any running stack first, as they share ports

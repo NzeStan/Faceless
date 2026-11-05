@@ -9,7 +9,7 @@ from django.core.files.storage import default_storage
 
 
 def open_media(ref: str):
-    """MEDIA_OPENER for django-social-publisher. Returns a seekable binary stream."""
+    """MEDIA_OPENER for django-social-video-publisher. Returns a seekable binary stream."""
     return default_storage.open(ref, "rb")
 
 

@@ -1,9 +1,9 @@
 import factory
 from django.contrib.auth import get_user_model
-from social_publisher.adapters.youtube import REQUIRED_SCOPES
-from social_publisher.models import ConnectedAccount, OAuthToken
-from social_publisher.services import _owner_fields
-from social_publisher.types import TokenBundle
+from social_video_publisher.adapters.youtube import REQUIRED_SCOPES
+from social_video_publisher.models import ConnectedAccount, OAuthToken
+from social_video_publisher.services import _owner_fields
+from social_video_publisher.types import TokenBundle
 
 from apps.content.models import ContentItem, Niche
 
